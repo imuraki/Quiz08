@@ -434,10 +434,6 @@ app.put(
           id,
           name,
           city,
-          request:{
-            type: 'GET',
-            url: 'http://162.243.170.203:3000/companies/' + id,
-	  }
         },
       });
     } catch (err) {
