@@ -5,6 +5,7 @@ const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { check, validationResult } = require('express-validator');
+const axios = require('axios');
 
 const port = 3000;
 let conn;
@@ -562,6 +563,45 @@ app.delete('/companies/:id', async (req, res) => {
     });
   } 
 });
+
+
+/**
+ * @swagger
+ * /say:
+ *   get:
+ *     summary: returns the greeting with keyword value.
+ *     tags: [Say - API Gateway]
+ *     parameters:
+ *       - name: keyword
+ *         in: query
+ *         type: string
+ *         required: true
+ *     responses:
+ *       '200':
+ *         description: OK
+ */
+
+app.get("/say", async (req, res) => {
+
+  try {
+    if(!req.query.keyword)
+        return res.status(404).json({error: 'Missing Query parameter keyword'});
+
+    const msg = await axios.get(
+      `https://jhqvekdcy3.execute-api.us-east-1.amazonaws.com/v1/say?keyword=${req.query.keyword}`
+    );
+
+    res.send(msg.data);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err,
+    });
+  }
+  
+});
+
 
 app.get('*', (req, res) => {
     res.send('Welcome client!');
